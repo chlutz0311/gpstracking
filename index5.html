@@ -9,20 +9,33 @@
   <script src="https://js.arcgis.com/4.30/"></script>
   <style>
     html, body, #viewDiv { padding: 0; margin: 0; height: 100%; width: 100%; }
-    #infoPanel, #positionPanel, #downloadButton { position: absolute; background: #fff; border-radius: 5px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-    #infoPanel { top: 10px; right: 10px; width: 300px; display: none; }
-    #positionPanel { bottom: 10px; left: 10px; }
-    #downloadButton { bottom: 10px; right: 10px; cursor: pointer; }
+    #controlPanel { 
+      position: absolute; 
+      top: 10px; 
+      right: 10px; 
+      background: #fff; 
+      border-radius: 5px; 
+      padding: 10px; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3); 
+      width: 250px;
+    }
+    #downloadButton { margin-top: 10px; cursor: pointer; width: 100%; }
   </style>
 </head>
 <body>
 
 <div id="viewDiv"></div>
-<div id="infoPanel">
-  <p><strong>GPS Tracking Notice:</strong> Please enable GPS on your device to track your journey. After enabling GPS, please <strong>refresh the page</strong>. We do not store your location data—tracking only occurs on your device. <a href="#" id="closePanel">Close</a></p>
+
+<!-- Control Panel combining all items -->
+<div id="controlPanel">
+  <div id="infoPanel">
+    <p><strong>GPS Tracking Notice:</strong> Please enable GPS on your device to track your journey. After enabling GPS, please <strong>refresh the page</strong>. We do not store your location data—tracking only occurs on your device. <a href="#" id="closePanel">Close</a></p>
+  </div>
+  <div id="positionPanel">
+    <p>Current Position: <span id="currentPosition">Waiting...</span></p>
+  </div>
+  <button id="downloadButton">Download Route as GeoJSON</button>
 </div>
-<div id="positionPanel">Current Position: <span id="currentPosition">Waiting...</span></div>
-<button id="downloadButton">Download Route as GeoJSON</button>
 
 <script>
   require([
@@ -77,10 +90,10 @@
         },
         error => {
           if (error.code === error.PERMISSION_DENIED) {
-            alert("Please enable GPS on your device for tracking. After enabling GPS, refresh this page.");
+            alert("Please enable GPS on your device AND for the browser if needed - like on iPhone - for tracking. After enabling GPS, refresh this page.");
           }
         },
-        { timeout: 1000 }
+        { timeout: 5000 }
       );
     } else {
       alert("GPS is not available on this device.");
